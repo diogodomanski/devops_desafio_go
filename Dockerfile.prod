@@ -1,0 +1,11 @@
+# Prepare and build main.go file
+FROM golang:1.14-alpine as builder
+WORKDIR /go/src/github.com/diogodomanski/codeeducation/
+COPY main.go .
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main .
+
+
+# Create a new image from scratch and copy the executable file from builder image
+FROM scratch
+COPY --from=builder /go/src/github.com/diogodomanski/codeeducation/main .
+CMD ["./main"]
